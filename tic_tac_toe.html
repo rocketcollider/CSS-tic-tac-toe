@@ -1,0 +1,207 @@
+<html>
+<style type="text/css">
+	.board {
+		display:block;
+		width:9rem;
+		height:9rem;
+		background-color:red;
+		position:relative;
+	}
+	.board > input{
+		float:left;
+		display:block;
+		width:3rem;
+		height:3rem;
+		margin:0;
+		opacity:1;
+	}
+	.control {
+		display:block;
+		background-color:green;
+		width:9rem;
+		height:9rem;
+		position:absolute;
+		top:0;
+		left:0;
+		margin:0;
+		opacity:0.5;
+	}
+	label, ins {
+		position:absolute;
+		width:2rem;
+		height:2rem;
+		opacity:.1;
+		margin:0;
+		border:0;
+		background-color:yellow;
+		border:.5rem solid red;
+	}
+	ins{
+		opacity:0.5;
+	}
+	.upper{
+		top:0;
+	}
+	.middl{
+		top:3rem;
+	}
+	.botom{
+		top:6rem;
+	}
+	.left{
+		left:0;
+	}
+	.cent{
+		left:3rem;
+	}
+	.righ{
+		left:6rem;
+	}
+	input[type="checkbox"]	{
+		display:none;
+	}
+	/*\
+	 *  Logic 
+	\*/
+
+	/* Firstly, show correct plane depending on odd or even number of :checked elements
+	 */
+	:checked ~ label.ofield, :checked ~ :checked ~ :checked ~ label.ofield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.ofield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.ofield{
+		display:none;
+	}
+	:checked ~ label.xfield, :checked ~ :checked ~ :checked ~ label.xfield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.xfield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.xfield{
+		display:block;
+	}
+	label.ofield, :checked ~ :checked ~ label.ofield, :checked ~ :checked ~ :checked ~ :checked ~ label.ofield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.ofield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.ofield{
+		display:block;
+	}
+	label.xfield, :checked ~ :checked ~ label.xfield, :checked ~ :checked ~ :checked ~ :checked ~ label.xfield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.xfield, :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ :checked ~ label.xfield{
+		display:none;
+	}
+	/* Secondly, hide any label for a checked field! 
+	 */
+	:checked +*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+ label,:checked +*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+ label, :checked +*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+ label{
+		display:none !important;
+	}
+	/* ... and mark o and x 'es
+	 */
+	ins::before{
+		display:none;
+		width:2rem;
+		height:2rem;
+		font-size:2rem;
+		text-decoration:none;
+		text-align:center;
+		vertical-align:middle;
+		padding:auto;
+	}
+	:checked +*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+ ins::before{
+		content:"X";
+		display:block;
+	}
+	:checked +*+*+*+*+*+*+*+*+ ins::before{
+		content:"O";
+		display:block;
+	}
+	/*Detect winner!*/
+	div{
+		display:block;
+		font-weight:bold;
+		width:10rem;
+		height:10rem;
+		position:absolute;
+		left:10rem;
+	}
+	.xfield:checked + .xfield:checked + .xfield:checked:nth-of-type(3n) ~ div::after, .xfield:checked +*+*+ .xfield:checked +*+*+ .xfield:checked ~ div::after, .xfield:checked +*+*+*+ .xfield:checked +*+*+*+ .xfield:checked ~ div::after, .xfield:checked +*+ .xfield:checked +*+ .xfield:checked ~ div::after{
+		content:"X";
+		background-color:blue;
+	}
+	.ofield:checked + .ofield:checked + .ofield:nth-of-type(3n):checked ~ div::after, .ofield:checked +*+*+ .ofield:checked +*+*+ .ofield:checked ~ div::after, .ofield:checked +*+*+*+ .ofield:checked +*+*+*+ .ofield:checked ~ div::after, .ofield:checked +*+ .ofield:checked +*+ .ofield:checked ~ div::after{
+		content:"O";
+		background-color:red;
+	}
+	/* Freeze all other actions!
+	   if first and last elm ar x/o, center is as well.
+	 */
+	.xfield:checked + :checked + .righ:checked ~ label,
+	.xfield:checked +*+ :checked +*+ .xfield:checked ~ label,
+	.xfield:checked +*+*+ :checked +*+*+ .xfield:checked ~ label,
+	.xfield:checked +*+*+*+ :checked +*+*+*+ .xfield:checked ~ label,
+	.ofield:checked + :checked + .righ:checked ~ label,
+	.ofield:checked +*+ :checked +*+ .ofield:checked ~ label,
+	.ofield:checked +*+*+ :checked +*+*+ .ofield:checked ~ label,
+	.ofield:checked +*+*+*+ :checked +*+*+*+ .ofield:checked ~ label{
+		display:none !important;
+	}
+
+	/* Highlight winning row!
+	 */
+	.left:checked +*+*+ :checked +*+*+ .xfield:checked ~ .left,
+	.ofield.left:checked +*+*+ :checked +*+*+ :checked ~ .left,
+	.cent:checked +*+*+ :checked +*+*+ .xfield:checked ~ .cent,
+	.ofield.cent:checked +*+*+ :checked +*+*+ :checked ~ .cent,
+	.righ:checked +*+*+ :checked +*+*+ .xfield:checked ~ .righ,
+	.ofield.righ:checked +*+*+ :checked +*+*+ :checked ~ .righ,
+	.upper:checked + :checked + .upper:checked ~ .upper,
+	.middl:checked + :checked + .middl:checked ~ .middl,
+	.botom:checked + :checked + .botom:checked ~ .botom,
+	.upper.righ:checked +*+ :checked +*+ :checked ~ .upper.righ,
+	.upper.righ:checked +*+ :checked +*+ :checked ~ .middl.cent,
+	.upper.righ:checked +*+ :checked +*+ :checked ~ .botom.left,
+	.upper.left:checked +*+*+*+ :checked +*+*+*+ :checked ~ .upper.left,
+	.upper.left:checked +*+*+*+ :checked +*+*+*+ :checked ~ .middl.cent,
+	.upper.left:checked +*+*+*+ :checked +*+*+*+ :checked ~ .botom.righ{
+		border:.5rem solid black;
+	}
+</style>
+<body>
+<article class="board">
+	<input class="upper left xfield" id="xfield1" type="checkbox">
+	<input class="upper cent xfield" id="xfield2" type="checkbox">
+	<input class="upper righ xfield" id="xfield3" type="checkbox">
+	<input class="middl left xfield" id="xfield4" type="checkbox">
+	<input class="middl cent xfield" id="xfield5" type="checkbox">
+	<input class="middl righ xfield" id="xfield6" type="checkbox">
+	<input class="botom left xfield" id="xfield7" type="checkbox">
+	<input class="botom cent xfield" id="xfield8" type="checkbox">
+	<input class="botom righ xfield" id="xfield9" type="checkbox">
+	<input class="upper left ofield" id="ofield1" type="checkbox">
+	<input class="upper cent ofield" id="ofield2" type="checkbox">
+	<input class="upper righ ofield" id="ofield3" type="checkbox">
+	<input class="middl left ofield" id="ofield4" type="checkbox">
+	<input class="middl cent ofield" id="ofield5" type="checkbox">
+	<input class="middl righ ofield" id="ofield6" type="checkbox">
+	<input class="botom left ofield" id="ofield7" type="checkbox">
+	<input class="botom cent ofield" id="ofield8" type="checkbox">
+	<input class="botom righ ofield" id="ofield9" type="checkbox">
+	<ins class="upper left"></ins>
+	<ins class="upper cent"></ins>
+	<ins class="upper righ"></ins>
+	<ins class="middl left"></ins>
+	<ins class="middl cent"></ins>
+	<ins class="middl righ"></ins>
+	<ins class="botom left"></ins>
+	<ins class="botom cent"></ins>
+	<ins class="botom righ"></ins>
+	<label class="upper left xfield" for="xfield1"></label>
+	<label class="upper cent xfield" for="xfield2"></label>
+	<label class="upper righ xfield" for="xfield3"></label>
+	<label class="middl left xfield" for="xfield4"></label>
+	<label class="middl cent xfield" for="xfield5"></label>
+	<label class="middl righ xfield" for="xfield6"></label>
+	<label class="botom left xfield" for="xfield7"></label>
+	<label class="botom cent xfield" for="xfield8"></label>
+	<label class="botom righ xfield" for="xfield9"></label>
+	<label class="upper left ofield" for="ofield1"></label>
+	<label class="upper cent ofield" for="ofield2"></label>
+	<label class="upper righ ofield" for="ofield3"></label>
+	<label class="middl left ofield" for="ofield4"></label>
+	<label class="middl cent ofield" for="ofield5"></label>
+	<label class="middl righ ofield" for="ofield6"></label>
+	<label class="botom left ofield" for="ofield7"></label>
+	<label class="botom cent ofield" for="ofield8"></label>
+	<label class="botom righ ofield" for="ofield9"></label>
+	<div></div>
+</article>
+</body>
+</html>
